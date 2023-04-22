@@ -1,20 +1,148 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  Switch,
+  ImageBackground,
+  TouchableWithoutFeedback,
+  TouchableOpacity, Button
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import * as ScreenOrientation from 'expo-screen-orientation';
+import {Circle, Svg} from 'react-native-svg';
+import { RadioButton } from 'react-native-paper';
+//----------------------------------------------------------------------------------------------------------------------
+import Modal from "./Componenets/modall";
+import Point from "./Componenets/point";
+import Menu from "./Componenets/selectMenu"
+
+//----------------------------------------------------------------------------------------------------------------------
+import scaleFilter from "./logic/filterForHeight";
+import gread from "./logic/greadGenerator";
+//======================================================================================================================
+
+ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).then();//
+
+let screanHith = 390;
+let screanWidth  = 892;
+let parametrOfPointsNumber = 2
+
 
 export default function App() {
+
+  const [showModall,setShowModall] = useState(false)
+  const [coordinates, setCoordinates] = useState({ x: -100, y: -20});
+  const [points,setPoints] = useState([]);
+  const [value, setValue] = useState('first');
+
+  function pointsHasFlexPoint(){
+    return  points.reduce((val, item) => item.status === "flex" ? val + 10 : val - 1, 0) > 0;
+  }
+
+  const addNewPoints = ()=>{
+    if(points.length<parametrOfPointsNumber){
+      if(points.length===parametrOfPointsNumber-1){
+        setPoints([{x:coordinates.x,y:coordinates.y,parametr:"blue",status:"fixed",id:points.length},...points])
+        setShowModall(false);
+        return;
+      }
+      setPoints([{x:coordinates.x,y:coordinates.y,parametr:"red",status:"fixed",id:points.length},...points])
+    }
+    if(pointsHasFlexPoint()){
+      setPoints(points.map((p)=>p.status==="flex"?{...p,x:coordinates.x,y:coordinates.y,status:"fixed"}:{...p}))
+    }
+
+    setShowModall(false);
+  };
+
+  const changePointStatus =(id)=>{
+    setPoints(points.map(el => el.id===id ? {...el,status:"flex"} : {...el}));
+
+  }
+
+
+
+  const handlePress = event => {
+    console.log("press hendle")
+    if (event.target.type !== 'checkbox'&& points.length<parametrOfPointsNumber) {
+      const { locationX, locationY } = event.nativeEvent;
+      setCoordinates({ x: locationX, y: locationY });
+      setShowModall(true);
+      console.log(locationX, locationY)
+    }
+    if(event.target.type !== 'checkbox' && pointsHasFlexPoint()){
+      const { locationX, locationY } = event.nativeEvent;
+      setCoordinates({ x: locationX, y: locationY });
+      setShowModall(true);
+      console.dir(event)
+
+    }
+  };
+
+  // useEffect(()=>{
+  //   console.log("efect",showModall)
+  // },[coordinates])
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+
+        <View style={styles.container}>
+          <ImageBackground style={styles.background} source={{ uri:"https://www.adobe.com/content/dam/cc/us/en/creative-cloud/photography/discover/drone-photography/desktop/drone-photography_P3_720x350.jpg.img.jpg" }}>
+          <View style={{backgroundColor:'rgba(8,236,38,0.04)'}}>
+            {showModall && <Modal addNewPoints={addNewPoints} left = {coordinates.x + 10} top={coordinates.y + 10}/>}
+              <TouchableWithoutFeedback onPress={handlePress}>
+                <Svg  height={400} width={811} style={{backgroundColor:'rgba(222,126,58,0)'}}>
+                  {gread(screanWidth,screanHith,scaleFilter(value))}
+                  <Circle cx={coordinates.x} cy={coordinates.y} r={10} fill={"red"}/>
+                  {points.map((el,i)=>(
+                      <Point  key={i} id={el.id} x={el.x} y={el.y} parametr={el.parametr}
+                              status={el.status} changePointStatus={changePointStatus} />))}
+                </Svg>
+              </TouchableWithoutFeedback>
+              <View style={{position:"absolute", top:-100,left:18,}}>
+                <RadioButton.Group  onValueChange={newValue => setValue(newValue)} value={value}>
+                  <View  style={{backgroundColor: 'rgba(8,236,168,0.44)',width:50,display:"flex",flexDirection:"column",justifyContent:"center"}}>
+                    <View >
+                      <RadioButton color={"blue"} value="first" />
+                      <Text style = {styles.radioHeight}>50 М</Text>
+                    </View>
+                    <View>
+                      <RadioButton  color={"blue"} value="second" />
+                      <Text color={"blue"} style = {styles.radioHeight}>100 М</Text>
+                    </View>
+                    <View>
+                      <RadioButton color={"blue"} value="third" />
+                      <Text style = {styles.radioHeight}>150М</Text>
+                    </View>
+                    <Button title={"OK"} onPress={() => console.log("Координаты отправлены!!")} />
+                        <Menu/>
+                  </View>
+                </RadioButton.Group>
+              </View>
+          </View>
+          </ImageBackground>
+        </View>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: StatusBar.currentHeight || 0,
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection:"column"
+  },
+  radioHeight:{
+    color:"rgb(0,255,246)",
+    fontWeight:'bold'
+  },
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });
