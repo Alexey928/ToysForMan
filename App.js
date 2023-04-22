@@ -16,7 +16,7 @@ import { RadioButton } from 'react-native-paper';
 //----------------------------------------------------------------------------------------------------------------------
 import Modal from "./Componenets/modall";
 import Point from "./Componenets/point";
-import Menu from "./Componenets/selectMenu"
+import ModeSwither from "./Componenets/SelectMenu"
 
 //----------------------------------------------------------------------------------------------------------------------
 import scaleFilter from "./logic/filterForHeight";
@@ -33,7 +33,7 @@ let parametrOfPointsNumber = 2
 export default function App() {
 
   const [showModall,setShowModall] = useState(false)
-  const [coordinates, setCoordinates] = useState({ x: -100, y: -20});
+  const [coordinates, setCoordinates] = useState({ x: -10, y: -20});
   const [points,setPoints] = useState([]);
   const [value, setValue] = useState('first');
 
@@ -92,7 +92,7 @@ export default function App() {
           <View style={{backgroundColor:'rgba(8,236,38,0.04)'}}>
             {showModall && <Modal addNewPoints={addNewPoints} left = {coordinates.x + 10} top={coordinates.y + 10}/>}
               <TouchableWithoutFeedback onPress={handlePress}>
-                <Svg  height={400} width={811} style={{backgroundColor:'rgba(222,126,58,0)'}}>
+                <Svg  height={365} width={811} style={{backgroundColor:'rgba(222,126,58,0)'}}>
                   {gread(screanWidth,screanHith,scaleFilter(value))}
                   <Circle cx={coordinates.x} cy={coordinates.y} r={10} fill={"red"}/>
                   {points.map((el,i)=>(
@@ -100,7 +100,7 @@ export default function App() {
                               status={el.status} changePointStatus={changePointStatus} />))}
                 </Svg>
               </TouchableWithoutFeedback>
-              <View style={{position:"absolute", top:-100,left:18,}}>
+              <View style={{position:"absolute", top:0,left:18,}}>
                 <RadioButton.Group  onValueChange={newValue => setValue(newValue)} value={value}>
                   <View  style={{backgroundColor: 'rgba(8,236,168,0.44)',width:50,display:"flex",flexDirection:"column",justifyContent:"center"}}>
                     <View >
@@ -116,7 +116,7 @@ export default function App() {
                       <Text style = {styles.radioHeight}>150М</Text>
                     </View>
                     <Button title={"OK"} onPress={() => console.log("Координаты отправлены!!")} />
-                        <Menu/>
+                        <ModeSwither/>
                   </View>
                 </RadioButton.Group>
               </View>
