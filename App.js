@@ -16,7 +16,8 @@ import { RadioButton } from 'react-native-paper';
 //----------------------------------------------------------------------------------------------------------------------
 import Modal from "./Componenets/modall";
 import Point from "./Componenets/point";
-import ModeSwither from "./Componenets/SelectMenu"
+import ModalSvither from "./Componenets/SelectMenu"
+import TempComponent from "./Componenets/TempComponent";
 
 //----------------------------------------------------------------------------------------------------------------------
 import scaleFilter from "./logic/filterForHeight";
@@ -27,11 +28,13 @@ ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).then();
 
 let screanHith = 390;
 let screanWidth  = 892;
-let parametrOfPointsNumber = 2
+let parametrOfPointsNumber = 2;
+
 
 
 export default function App() {
 
+  const [tr,setTr] = useState(true)
   const [showModall,setShowModall] = useState(false)
   const [coordinates, setCoordinates] = useState({ x: -10, y: -20});
   const [points,setPoints] = useState([]);
@@ -62,8 +65,6 @@ export default function App() {
 
   }
 
-
-
   const handlePress = event => {
     console.log("press hendle")
     if (event.target.type !== 'checkbox'&& points.length<parametrOfPointsNumber) {
@@ -87,10 +88,11 @@ export default function App() {
 
   return (
 
-        <View style={styles.container}>
+      <>
+        {tr?<View style={styles.container}>
           <ImageBackground style={styles.background} source={{ uri:"https://www.adobe.com/content/dam/cc/us/en/creative-cloud/photography/discover/drone-photography/desktop/drone-photography_P3_720x350.jpg.img.jpg" }}>
-          <View style={{backgroundColor:'rgba(8,236,38,0.04)'}}>
-            {showModall && <Modal addNewPoints={addNewPoints} left = {coordinates.x + 10} top={coordinates.y + 10}/>}
+            <View style={{backgroundColor:'rgba(8,236,38,0.04)'}}>
+              {showModall && <Modal addNewPoints={addNewPoints} left = {coordinates.x + 10} top={coordinates.y + 10}/>}
               <TouchableWithoutFeedback onPress={handlePress}>
                 <Svg  height={365} width={811} style={{backgroundColor:'rgba(222,126,58,0)'}}>
                   {gread(screanWidth,screanHith,scaleFilter(value))}
@@ -116,13 +118,14 @@ export default function App() {
                       <Text style = {styles.radioHeight}>150М</Text>
                     </View>
                     <Button title={"OK"} onPress={() => console.log("Координаты отправлены!!")} />
-                        <ModeSwither/>
+                    <ModalSvither/>
                   </View>
                 </RadioButton.Group>
               </View>
-          </View>
+            </View>
           </ImageBackground>
-        </View>
+        </View>:<TempComponent/>}
+      </>
 
   );
 }
