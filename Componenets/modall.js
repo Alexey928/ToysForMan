@@ -9,9 +9,7 @@ export default function Modall(props){
     </View>
 )};
 
-
-
-const styles =StyleSheet.create({
+const styles = StyleSheet.create({
         radioHeight:{
             flexDirection: 'row',
             alignItems: 'center',

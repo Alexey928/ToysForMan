@@ -34,7 +34,7 @@ let parametrOfPointsNumber = 2;
 
 export default function App() {
 
-  const [tr,setTr] = useState(true)
+  const [tr,setTr] = useState(false)
   const [showModall,setShowModall] = useState(false)
   const [coordinates, setCoordinates] = useState({ x: -10, y: -20});
   const [points,setPoints] = useState([]);

@@ -60,7 +60,4 @@ const styles = StyleSheet.create({
     activePikerItem:{
         backgroundColor:'#9d5921'
     }
-
-
-
 });
