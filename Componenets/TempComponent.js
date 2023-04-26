@@ -7,10 +7,8 @@ const App = () => {
 
     const handlePress = () => {
         setScale(scale)
-
         setVector({...vector,x:vector.x=380,y:vector.y=190});
     };
-
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.touchArea} onPress={handlePress}>

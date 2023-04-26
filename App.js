@@ -18,6 +18,7 @@ import Modal from "./Componenets/modall";
 import Point from "./Componenets/point";
 import ModalSvither from "./Componenets/SelectMenu"
 import TempComponent from "./Componenets/TempComponent";
+import TempComponent2 from "./Componenets/TempFile2"
 
 //----------------------------------------------------------------------------------------------------------------------
 import scaleFilter from "./logic/filterForHeight";
@@ -36,9 +37,12 @@ export default function App() {
 
   const [tr,setTr] = useState(false)
   const [showModall,setShowModall] = useState(false)
-  const [coordinates, setCoordinates] = useState({ x: -10, y: -20});
+  const [coordinates, setCoordinates] = useState({x: -10, y: -20});
   const [points,setPoints] = useState([]);
   const [value, setValue] = useState('first');
+
+  const [scale, setScale] = useState(1);
+  const [vector,setVector] = useState({x:0,y:0})
 
   function pointsHasFlexPoint(){
     return  points.reduce((val, item) => item.status === "flex" ? val + 10 : val - 1, 0) > 0;
@@ -62,7 +66,6 @@ export default function App() {
 
   const changePointStatus =(id)=>{
     setPoints(points.map(el => el.id===id ? {...el,status:"flex"} : {...el}));
-
   }
 
   const handlePress = event => {
@@ -90,41 +93,44 @@ export default function App() {
 
       <>
         {tr?<View style={styles.container}>
-          <ImageBackground style={styles.background} source={{ uri:"https://www.adobe.com/content/dam/cc/us/en/creative-cloud/photography/discover/drone-photography/desktop/drone-photography_P3_720x350.jpg.img.jpg" }}>
-            <View style={{backgroundColor:'rgba(8,236,38,0.04)'}}>
-              {showModall && <Modal addNewPoints={addNewPoints} left = {coordinates.x + 10} top={coordinates.y + 10}/>}
-              <TouchableWithoutFeedback onPress={handlePress}>
-                <Svg  height={365} width={811} style={{backgroundColor:'rgba(222,126,58,0)'}}>
-                  {gread(screanWidth,screanHith,scaleFilter(value))}
-                  <Circle cx={coordinates.x} cy={coordinates.y} r={10} fill={"red"}/>
-                  {points.map((el,i)=>(
-                      <Point  key={i} id={el.id} x={el.x} y={el.y} parametr={el.parametr}
-                              status={el.status} changePointStatus={changePointStatus} />))}
-                </Svg>
-              </TouchableWithoutFeedback>
-              <View style={{position:"absolute", top:0,left:18,}}>
-                <RadioButton.Group  onValueChange={newValue => setValue(newValue)} value={value}>
-                  <View  style={{backgroundColor: 'rgba(8,236,168,0.44)',width:50,display:"flex",flexDirection:"column",justifyContent:"center"}}>
-                    <View >
-                      <RadioButton color={"blue"} value="first" />
-                      <Text style = {styles.radioHeight}>50 М</Text>
-                    </View>
-                    <View>
-                      <RadioButton  color={"blue"} value="second" />
-                      <Text color={"blue"} style = {styles.radioHeight}>100 М</Text>
-                    </View>
-                    <View>
-                      <RadioButton color={"blue"} value="third" />
-                      <Text style = {styles.radioHeight}>150М</Text>
-                    </View>
-                    <Button title={"OK"} onPress={() => console.log("Координаты отправлены!!")} />
-                    <ModalSvither/>
-                  </View>
-                </RadioButton.Group>
-              </View>
-            </View>
+          <ImageBackground style={[styles.background, {transform:[{ translateX: vector.x },{translateY:vector.y },{scale}]}] }source={{ uri:"https://www.adobe.com/content/dam/cc/us/en/creative-cloud/photography/discover/drone-photography/desktop/drone-photography_P3_720x350.jpg.img.jpg" }}>
           </ImageBackground>
-        </View>:<TempComponent/>}
+          <View style={{backgroundColor:'rgba(8,236,38,0)',position:"absolute", top:0,left:1,}}>
+            {showModall && <Modal addNewPoints={addNewPoints} left = {coordinates.x + 10} top={coordinates.y + 10}/>}
+            <TouchableWithoutFeedback onPress={handlePress}>
+              <Svg  height={365} width={811} style={{backgroundColor:'rgba(222,126,58,0)'}}>
+                {gread(screanWidth,screanHith,scaleFilter(value))}
+                <Circle cx={coordinates.x} cy={coordinates.y} r={10} fill={"red"}/>
+                {points.map((el,i)=>(
+                    <Point  key={i} id={el.id} x={el.x} y={el.y} parametr={el.parametr}
+                            status={el.status} changePointStatus={changePointStatus} />))}
+              </Svg>
+            </TouchableWithoutFeedback>
+            <View style={{position:"absolute", top:0,left:1,}}>
+              <RadioButton.Group  onValueChange={newValue => {setValue(newValue);setVector({x:389,y:190});setScale(2.05)}} value={value}>
+                <View  style={{backgroundColor: 'rgba(38,50,243,0.49)',width:50,display:"flex",flexDirection:"column",justifyContent:"center"}}>
+                  <View  >
+                    <RadioButton color={"blue"} value="first" />
+                    <Text style = {styles.radioHeight}>50 М</Text>
+                  </View>
+
+                  <View>
+                    <RadioButton  color={"blue"} value="second" />
+                    <Text color={"blue"} style = {styles.radioHeight}>100 М</Text>
+                  </View>
+
+
+                  <View>
+                    <RadioButton color={"blue"} value="third" />
+                    <Text style = {styles.radioHeight}>150М</Text>
+                  </View>
+                  <Button title={"OK"} onPress={() => console.log("Координаты отправлены!!")} />
+                  <ModalSvither/>
+                </View>
+              </RadioButton.Group>
+            </View>
+          </View>
+        </View>:<TempComponent2/>}
       </>
 
   );
