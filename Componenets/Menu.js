@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native';
+import SelectedMenu from "./SelectMenu"
 
-export default function App() {
+export default function menuBurger() {
     const [isOpen, setIsOpen] = useState(false);
+
     const slideAnim = useRef(new Animated.Value(0)).current;
     const colorAnim = useRef(new Animated.Value(0)).current;
-
     const toggleMenu = () => {
         setIsOpen(prev=>!prev);
         Animated.timing(slideAnim, {
@@ -31,66 +32,83 @@ export default function App() {
         ],
         backgroundColor: colorAnim.interpolate({
             inputRange: [0, 1],
-            outputRange: ['rgba(25,243,136,0.36)', 'rgb(137,2,169)'],
+            outputRange: ['rgba(25,243,136,0.36)', 'rgb(164,245,3)'],
         }),
 
     };
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity onPress={toggleMenu}>
-                <Text style={styles.menuButton}>M</Text>
-            </TouchableOpacity>
+        <>
+            <View style={styles.menuButtonContayner}>
+                    <TouchableOpacity onPress={toggleMenu}>
+                        <View style={styles.menuButton}>
+                            <Text>M</Text>
+                        </View>
+                    </TouchableOpacity>
+            </View>
 
             <Animated.View style={[styles.menu, menuStyle]}>
                 <TouchableOpacity onPress={toggleMenu}>
-                    <Text style={styles.closeButton}>Закрыть</Text>
+                    <View style={styles.closeButton}>
+                        <Text >X</Text>
+                    </View>
+
                 </TouchableOpacity>
-                <Text style={styles.menuItem}>Главная</Text>
-                <Text style={styles.menuItem}>О нас</Text>
-                <Text style={styles.menuItem}>Контакты</Text>
+                <SelectedMenu/>
+                <Text style={styles.menuItem}>+ position</Text>
+                <Text style={styles.menuItem}>conect chek</Text>
             </Animated.View>
-        </View>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'rgba(255,255,255,0)',
-        alignItems: 'center',
-        justifyContent: 'center',
+
+    menuButtonContayner:{
+        top:0,
+        left:0,
+        position:"absolute",
     },
     menuButton: {
         lineHeight:20,
         fontSize: 20,
         fontWeight: 'bold',
-        padding: 20,
+        padding: 10,
         backgroundColor:'rgba(125,0,206,0.91)',
         borderRadius:100,
-        borderWidth:1,
-        borderColor:'rgb(91,253,0)',
-
+        borderWidth:5,
+        borderColor:'rgb(6,250,164)',
     },
     menu: {
         position: 'absolute',
+        display:"flex",
+        alignItems:"center",
+        justifyContent: "space-evenly",
         top: 0,
         left: 0,
         bottom: 0,
-        width: 300,
-        alignItems: 'center',
-        justifyContent: 'center',
+        width: 150,
+        paddingTop:50,
+        borderRadius:25,
+        borderWidth:5,
+        borderColor:'rgb(255,205,4)'
+
     },
     closeButton: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        padding: 20,
-
-        top: 0,
-        right: 0,
+        width:100,
+        display:'flex',
+        alignItems:"center",
+        flexDirection:"row",
+        justifyContent:"center",
+        borderWidth:1,
+        borderColor:'rgb(232,8,248)',
+        backgroundColor:'rgb(6,250,164)',
+        borderRadius:25,
     },
     menuItem: {
+        backgroundColor:'rgb(6,250,164)',
         fontSize: 20,
-        padding: 20,
+        padding:5,
+        borderRadius:5,
     },
 });
